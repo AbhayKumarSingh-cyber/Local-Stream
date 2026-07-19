@@ -2,33 +2,39 @@ import { useState, useEffect } from 'react';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 
 export default function VideoPlayer() {
-  const [videoSrc, setVideoSrc] = useState<string>('');
+  const [videoSrc, setVideoSrc] = useState('');
   const [resolution, setResolution] = useState('original');
 
   const refreshPlayer = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/videos');
+      // 1. Fetching from the relative path (works on both local and Render)
+      const response = await fetch('/api/videos');
       const files = await response.json();
       
       if (files && files.length > 0) {
+        // 2. Accessing the latest file object from the Cloudinary API array
         const latestFile = files[files.length - 1];
-        const baseUrl = "http://localhost:5000/uploads";
         
-        const fileName = resolution === 'original' 
-          ? latestFile 
-          : latestFile.replace('.mp4', '_480p.mp4');
+        // 3. Using secure_url from the Cloudinary object
+        let videoUrl = latestFile.secure_url;
 
-        setVideoSrc(`${baseUrl}/${encodeURIComponent(fileName)}`);
+        // 4. Handling resolution (Basic transformation logic)
+        // If 480p is selected, we inject the transformation into the URL
+        if (resolution === '480p') {
+          videoUrl = videoUrl.replace('/upload/', '/upload/c_scale,h_480/');
+        }
+
+        setVideoSrc(videoUrl);
       }
     } catch (error) {
       console.error("Error fetching video list:", error);
     }
   };
 
-  // Automatically load the video on mount
+  // Automatically load the video on mount and when resolution changes
   useEffect(() => {
     refreshPlayer();
-  }, [resolution]); // Refresh whenever resolution changes too
+  }, [resolution]);
 
   return (
     <div style={{ padding: '20px', background: '#1a1a1a', color: '#fff', borderRadius: '8px' }}>
@@ -44,7 +50,7 @@ export default function VideoPlayer() {
       </div>
 
       {videoSrc ? (
-        <video controls width="100%" src={videoSrc} />
+        <video controls width="100%" src={videoSrc} key={videoSrc} />
       ) : (
         <p style={{ color: '#aaa' }}>No video found in storage.</p>
       )}
