@@ -12,7 +12,13 @@ const __dirname = path.dirname(__filename);
 const app = express();
 
 // 3. Configure Cloudinary (Automatically uses your CLOUDINARY_URL from Render)
-cloudinary.config();
+import { v2 as cloudinary } from 'cloudinary';
+
+cloudinary.config({ 
+  cloud_name: 'jzqifbhx', 
+  api_key: '629336954571766', 
+  api_secret: 'PASTE_YOUR_SECRET_HERE' 
+});
 
 // Middleware
 app.use(express.json());
