@@ -35,16 +35,23 @@ app.post('/api/upload', upload.single('video'), async (req, res) => {
   }
 });
 
-// Fetch Route - MUST BE HERE
+// Fetch Route - UPDATED
 app.get('/api/videos', async (req, res) => {
   try {
+    // Attempting to fetch videos from the specified folder
     const result = await cloudinary.api.resources({
       type: 'upload',
-      prefix: 'local-stream-vault/',
-      resource_type: 'video'
+      prefix: 'local-stream-vault/', // Ensure this matches your Cloudinary folder exactly
+      resource_type: 'video',
+      max_results: 50 // Increased to ensure we fetch enough items
     });
+    
+    // Log the result to your Render dashboard logs to debug why videos aren't showing
+    console.log("Cloudinary fetch result:", result.resources); 
+    
     res.json(result.resources);
   } catch (error) {
+    console.error("Cloudinary Error:", error);
     res.status(500).json({ error: error.message });
   }
 });
