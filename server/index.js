@@ -15,7 +15,7 @@ const app = express();
 cloudinary.config({ 
   cloud_name: 'jzqifbhx', 
   api_key: '629336954571766', 
-  api_secret: TQs1xFnEDQZpPIOeZkURjmKYxV8 // <--- PUT YOUR SECRET HERE
+  api_secret: 'TQs1xFnEDQZpPIOeZkURjmKYxV8' // <--- PUT YOUR SECRET HERE
 });
 
 // Middleware
