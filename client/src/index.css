@@ -1,0 +1,53 @@
+/* Local Stream Global Styles */
+/* 1. Global Reset & Body Theme */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #87b8e5; /* Deep black-vault background */
+  color: #e2e8f0;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* 2. Container styling */
+.vault-ui {
+  max-width: 800px;
+  margin: 40px auto;
+  background: #111111;
+  padding: 30px;
+  border-radius: 16px;
+  border: 1px solid #474040;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+/* 3. Modern Button Styling */
+button {
+  background: #2563eb !important;
+  color: white !important;
+  border: none !important;
+  padding: 12px 24px !important;
+  border-radius: 8px !important;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  background: #1d4ed8 !important;
+  transform: translateY(-2px);
+}
+
+/* 4. Dropdown Select Styling */
+select {
+  background: #5ee27b !important;
+  color: white !important;
+  border: 1px solid #9c4040 !important;
+  padding: 10px !important;
+  border-radius: 6px !important;
+}
+
+/* 5. Video Player Container */
+video {
+  border-radius: 12px;
+  border: 1px solid #bb3d3d;
+  margin-top: 20px;
+}
