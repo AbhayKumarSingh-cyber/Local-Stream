@@ -35,21 +35,26 @@ app.post('/api/upload', upload.single('video'), async (req, res) => {
   }
 });
 
-// Fetch Route - UPDATED
+// Fetch Route - Flexible and Error-Resilient
 app.get('/api/videos', async (req, res) => {
   try {
-    // Attempting to fetch videos from the specified folder
+    // Fetch all video resources without a strict prefix restriction
     const result = await cloudinary.api.resources({
       type: 'upload',
-      prefix: 'local-stream-vault/', // Ensure this matches your Cloudinary folder exactly
       resource_type: 'video',
-      max_results: 50 // Increased to ensure we fetch enough items
+      max_results: 50
     });
     
-    // Log the result to your Render dashboard logs to debug why videos aren't showing
-    console.log("Cloudinary fetch result:", result.resources); 
+    // Filter locally in memory to find matching assets
+    const filteredVideos = result.resources.filter(file => 
+      file.public_id && file.public_id.includes('local-stream-vault')
+    );
     
-    res.json(result.resources);
+    // Fallback to all resources if the local filter returns nothing but assets exist
+    const videosToSend = filteredVideos.length > 0 ? filteredVideos : result.resources;
+
+    console.log("Cloudinary fetch result count:", videosToSend.length); 
+    res.json(videosToSend);
   } catch (error) {
     console.error("Cloudinary Error:", error);
     res.status(500).json({ error: error.message });
