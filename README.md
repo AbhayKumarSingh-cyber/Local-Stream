@@ -1,4 +1,7 @@
 # React + TypeScript + Vite
+## 🚀 Live Demo
+You can view the live application here:
+[https://local-stream.onrender.com](https://local-stream.onrender.com)
 
 This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
 
