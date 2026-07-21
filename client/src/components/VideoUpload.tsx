@@ -7,39 +7,28 @@ export default function VideoUpload({ onUploadComplete }: { onUploadComplete?: (
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const chunkSize = 1024 * 1024;
-    const totalChunks = Math.ceil(file.size / chunkSize);
-    const fileName = file.name;
-
     setStatus('Uploading...');
 
-    for (let i = 0; i < totalChunks; i++) {
-      const start = i * chunkSize;
-      const end = Math.min(start + chunkSize, file.size);
-      const chunk = file.slice(start, end);
+    const formData = new FormData();
+    formData.append('video', file);
 
-      try {
-        const url = `http://localhost:5000/upload-chunk?chunkNumber=${i}&totalChunks=${totalChunks}&fileName=${encodeURIComponent(fileName)}`;
-        const response = await fetch(url, {
-          method: 'POST',
-          body: chunk,
-          headers: { 'Content-Type': 'application/octet-stream' }
-        });
+    try {
+      // Use relative path so it works seamlessly on both local and Render production
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
 
-        if (!response.ok) {
-          throw new Error(`Failed at chunk ${i}`);
-        }
-        
-        const progress = Math.round(((i + 1) / totalChunks) * 100);
-        setStatus(`Uploading: ${progress}%`);
-      } catch (err) {
-        setStatus('Pipeline broken. (0%)');
-        console.error(err);
-        return;
+      if (!response.ok) {
+        throw new Error('Upload failed on server');
       }
+
+      setStatus('Upload Complete!');
+      onUploadComplete?.();
+    } catch (err) {
+      setStatus('Pipeline broken. (0%)');
+      console.error(err);
     }
-    setStatus('Upload Complete!');
-    onUploadComplete?.();
   };
 
   return (
